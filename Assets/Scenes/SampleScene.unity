@@ -4621,7 +4621,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a97708d7c6e728c46905092cc98678a4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bodyPileCountLimit: 5
+  _levelPlayerModules:
+  - {fileID: 11400000, guid: 0613a1540c40274409481bd5a4ff09ad, type: 2}
+  - {fileID: 11400000, guid: a0d1906eaee456d4a9c98eae76eb5156, type: 2}
+  - {fileID: 11400000, guid: 779c00024cf9d084f9958fd10c2bf801, type: 2}
+  - {fileID: 11400000, guid: 6091c5279c87fa84babbad3a3f958c38, type: 2}
 --- !u!1 &999957560
 GameObject:
   m_ObjectHideFlags: 0

@@ -7,6 +7,8 @@ public class CorpseBuyer : MonoBehaviour
 {
     [SerializeField] private Transform _corpseTarget;
 
+    //Prefab de notas, fazer as notas lerparem até o player através de evento
+
     private List<Body> _corpses = new List<Body>();
 
     public event Action<Body> OnBodyBought;
@@ -50,6 +52,7 @@ public class CorpseBuyer : MonoBehaviour
                 _corpses.Add(item);
                 OnBodyBought?.Invoke(item);
                 OnPayPlayer?.Invoke(item.SellValue);
+                //Transporter.TransportObject(this, new GameObject().transform, PlayerManager.Instance.transform);
             }
 
             StartCoroutine(MoveCorpses());
