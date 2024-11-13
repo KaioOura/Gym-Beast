@@ -10,9 +10,11 @@ public class Body : MonoBehaviour
     [SerializeField] private RagdollWrapper _ragdollWrapper;
     [SerializeField] private CollisionNotifier _collisionNotifier;
     [SerializeField] private Transform _bodyBones;
+    [SerializeField] private int _sellValue;
 
     public Transform BodyBones => _bodyBones;
     public Transform BodyPos => bodyPos;
+    public int SellValue => _sellValue;
 
 
     // Start is called before the first frame update

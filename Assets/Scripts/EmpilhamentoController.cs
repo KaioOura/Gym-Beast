@@ -9,7 +9,8 @@ public class EmpilhamentoController : MonoBehaviour
     [SerializeField] private float _returnVelocity = 2;
     [SerializeField] private float _bodyFollowSpeed = 10;
     [SerializeField] List<Body> _bodies;
-    [SerializeField] private int _maxBodies;
+
+     private int _maxBodies;
 
     public List<Body> Bodies => _bodies;
 
@@ -17,7 +18,13 @@ public class EmpilhamentoController : MonoBehaviour
 
     void Start()
     {
+        PlayerManager.Instance.OnMaxPileCountUpdate += UpdateMaxBodyPileCount;
+        UpdateMaxBodyPileCount(PlayerManager.Instance.MaxBodyPileCount);
+    }
 
+    void OnDestroy()
+    {
+        PlayerManager.Instance.OnMaxPileCountUpdate -= UpdateMaxBodyPileCount;
     }
 
     void Update()
@@ -29,6 +36,11 @@ public class EmpilhamentoController : MonoBehaviour
     public void Init(Rigidbody rb)
     {
         _rb = rb;
+    }
+
+    void UpdateMaxBodyPileCount(int value)
+    {
+        _maxBodies = value;
     }
 
     public bool TryToAddToPile(Body body)
