@@ -19,7 +19,11 @@ public class PlayerManager : MonoBehaviour
     public int Level => _level;
     public int MaxBodyPileCount => _maxBodyPileCount;
     public int Currency => _currency;
+
+
     public event Action<int> OnMaxPileCountUpdate;
+    public event Action<Color> OnChangePlayerColor;
+    public event Action<int, bool> OnCurrencyChange;
 
     void Awake()
     {
@@ -49,7 +53,7 @@ public class PlayerManager : MonoBehaviour
         if (_level > _levelPlayerModules.Length)
             return false;
 
-        if (_levelPlayerModules[_level].CurrencyNeeded < _currency)
+        if (_levelPlayerModules[_level].CurrencyNeeded > _currency)
             return false;
 
         return true;
@@ -65,10 +69,12 @@ public class PlayerManager : MonoBehaviour
         }
 
         _currency -= _levelPlayerModules[_level].CurrencyNeeded;
+        OnCurrencyChange?.Invoke(_currency, false);
         //Evento atualizando UI
 
         _maxBodyPileCount += _levelPlayerModules[_level].ValueToAddToPile;
         OnMaxPileCountUpdate?.Invoke(_maxBodyPileCount);
+        OnChangePlayerColor?.Invoke(_levelPlayerModules[_level].PlayerColor);
         
         _level += 1;
     }
@@ -76,6 +82,8 @@ public class PlayerManager : MonoBehaviour
     public void OnReceivePayment(int value)
     {
         _currency += value;
+
+        OnCurrencyChange?.Invoke(_currency, true);
 
         if (CanLevelUp())
         {

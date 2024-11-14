@@ -15,4 +15,4 @@ MonoBehaviour:
   _levelModule: 2
   _currencyNeeded: 0
   _valueToAddToPile: 1
-  _playerColor: {r: 1, g: 1, b: 1, a: 1}
+  _playerColor: {r: 1, g: 0, b: 0.9039521, a: 1}

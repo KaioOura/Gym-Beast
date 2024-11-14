@@ -14,8 +14,8 @@ TagManager:
   - UI
   - Ragdoll
   - Hittable
-  - 
-  - 
+  - WorldUI
+  - ScreenUI
   - 
   - 
   - 
@@ -41,4 +41,7 @@ TagManager:
   m_SortingLayers:
   - name: Default
     uniqueID: 0
+    locked: 0
+  - name: WorldLayer
+    uniqueID: 112979291
     locked: 0

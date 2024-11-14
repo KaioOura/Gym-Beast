@@ -17,12 +17,12 @@ public class CorpseBuyer : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        OnPayPlayer += PlayerManager.Instance.OnReceivePayment; 
+        OnPayPlayer += PlayerManager.Instance.OnReceivePayment;
     }
 
     void OnDestroy()
     {
-        OnPayPlayer -= PlayerManager.Instance.OnReceivePayment; 
+        OnPayPlayer -= PlayerManager.Instance.OnReceivePayment;
     }
 
     // Update is called once per frame
@@ -51,23 +51,30 @@ public class CorpseBuyer : MonoBehaviour
             {
                 _corpses.Add(item);
                 OnBodyBought?.Invoke(item);
-                OnPayPlayer?.Invoke(item.SellValue);
-                //Transporter.TransportObject(this, new GameObject().transform, PlayerManager.Instance.transform);
+
+                Transporter.Instance.TransportObject("Body", item.BodyBones, _corpseTarget, () =>
+                {
+                    OnPayPlayer?.Invoke(item.SellValue);
+                    _corpses.RemoveAt(0);
+                });
             }
 
-            StartCoroutine(MoveCorpses());
+            //StartCoroutine(MoveCorpses(OnPayPlayer));
             OnBodyBought -= empilhamentoController.OnBodyBought;
         }
     }
 
-    IEnumerator MoveCorpses()
+    IEnumerator MoveCorpses(Action<int> callback)
     {
         while (_corpses.Count > 0)
         {
             if (Vector3.Distance(_corpses[0].BodyBones.position, _corpseTarget.position) > 0.1f)
                 _corpses[0].BodyBones.position = Vector3.MoveTowards(_corpses[0].BodyBones.position, _corpseTarget.position, 10 * Time.deltaTime);
             else
+            {
+                callback?.Invoke(_corpses[0].SellValue);
                 _corpses.RemoveAt(0);
+            }
 
             yield return null;
         }
