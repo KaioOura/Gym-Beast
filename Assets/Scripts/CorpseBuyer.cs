@@ -6,6 +6,7 @@ using UnityEngine;
 public class CorpseBuyer : MonoBehaviour
 {
     [SerializeField] private Transform _corpseTarget;
+    [SerializeField] GameObject _money;
 
     //Prefab de notas, fazer as notas lerparem até o player através de evento
 
@@ -54,7 +55,13 @@ public class CorpseBuyer : MonoBehaviour
 
                 Transporter.Instance.TransportObject("Body", item.BodyBones, _corpseTarget, () =>
                 {
-                    OnPayPlayer?.Invoke(item.SellValue);
+                    GameObject money = Instantiate(_money, item.BodyBones.position, Quaternion.identity);
+                    Transporter.Instance.TransportObject("Money", money.transform, empilhamentoController.transform, () => 
+                    {
+                        OnPayPlayer?.Invoke(item.SellValue);
+                        Destroy(money);
+                    });
+                    
                     _corpses.RemoveAt(0);
                 });
             }

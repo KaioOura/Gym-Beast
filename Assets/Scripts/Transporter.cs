@@ -66,7 +66,7 @@ public class Transporter : MonoBehaviour
         {
             if (Vector3.Distance(obj.position, target.position) > 0.1f)
             {
-                obj.position = Vector3.Slerp(obj.position, target.position, 5 * Time.deltaTime);
+                obj.position = Vector3.Lerp(obj.position, target.position, 10 * Time.deltaTime);
             }
             else
             {
