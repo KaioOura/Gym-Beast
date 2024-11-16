@@ -48,12 +48,9 @@ public class PlayerManager : MonoBehaviour
 
     }
 
-    bool CanLevelUp()
+    public bool CanLevelUp()
     {
         if (_level > _levelPlayerModules.Length)
-            return false;
-
-        if (_levelPlayerModules[_level].CurrencyNeeded > _currency)
             return false;
 
         return true;
@@ -68,14 +65,13 @@ public class PlayerManager : MonoBehaviour
             return;
         }
 
-        _currency -= _levelPlayerModules[_level].CurrencyNeeded;
         OnCurrencyChange?.Invoke(_currency, false);
         //Evento atualizando UI
 
         _maxBodyPileCount += _levelPlayerModules[_level].ValueToAddToPile;
         OnMaxPileCountUpdate?.Invoke(_maxBodyPileCount);
         OnChangePlayerColor?.Invoke(_levelPlayerModules[_level].PlayerColor);
-        
+
         _level += 1;
     }
 
@@ -85,11 +81,13 @@ public class PlayerManager : MonoBehaviour
 
         OnCurrencyChange?.Invoke(_currency, true);
 
-        if (CanLevelUp())
-        {
-            //Evento indicando possibilidade de level up, provavelmente UI
-        }
-
         //Evento disparando quando ganhou;
+    }
+
+    public void OnPayment(int value)
+    {
+        _currency -= value;
+        OnCurrencyChange?.Invoke(_currency, false);
+
     }
 }

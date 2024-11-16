@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,6 +11,8 @@ public class Shop : MonoBehaviour
     [SerializeField] private float _timeToStartPurchase;
     [SerializeField] private float _timeToCompletePurchase;
     [SerializeField] private Image _purchaseProgressImage;
+    [SerializeField] private int _price;
+    [SerializeField] private PurchaseReward _purchaseReward;
 
 
     private float _purchaseProgress;
@@ -17,11 +20,13 @@ public class Shop : MonoBehaviour
     private bool _alreadyPurchased;
     private float _startPurchase;
 
+    public event Action<int> OnPurchase;
+
 
     // Start is called before the first frame update
     void Start()
     {
-
+        OnPurchase += PlayerManager.Instance.OnPayment;
     }
 
     // Update is called once per frame
@@ -44,8 +49,15 @@ public class Shop : MonoBehaviour
 
         if (_purchaseProgress >= _timeToCompletePurchase)
         {
-            Debug.Log("Purchased");
-            _alreadyPurchased = true;
+            if (PlayerManager.Instance.Currency >= _price && CanGiveReward())
+            {
+                Debug.Log("Purchased");
+                _alreadyPurchased = true;
+
+                
+                OnPurchase?.Invoke(_price);
+            }
+
 
             //Dar recompensa
         }
@@ -59,6 +71,31 @@ public class Shop : MonoBehaviour
     void Reset()
     {
         _purchaseProgress = 0;
+    }
+
+    
+
+
+    bool CanGiveReward()
+    {
+        switch (_purchaseReward)
+        {
+            case PurchaseReward.None:
+                {
+                    break;
+                }
+            case PurchaseReward.Level:
+                {
+                    return PlayerManager.Instance.CanLevelUp();
+                }
+
+            default:
+                {
+
+                    break;
+                }
+        }
+        return true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -79,4 +116,11 @@ public class Shop : MonoBehaviour
             //_startPurchase = Time.time + _timeToStartPurchase;
         }
     }
+}
+
+public enum PurchaseReward
+{
+    None,
+    Level,
+    Skin
 }
