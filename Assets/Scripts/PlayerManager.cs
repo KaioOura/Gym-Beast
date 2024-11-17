@@ -50,7 +50,7 @@ public class PlayerManager : MonoBehaviour
 
     public bool CanLevelUp()
     {
-        if (_level > _levelPlayerModules.Length)
+        if (_level > _levelPlayerModules.Length - 1)
             return false;
 
         return true;

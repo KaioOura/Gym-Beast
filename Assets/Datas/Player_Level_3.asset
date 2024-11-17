@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: Player_Level_3
   m_EditorClassIdentifier: 
   _levelModule: 3
-  _currencyNeeded: 0
-  _valueToAddToPile: 1
+  _valueToAddToPile: 10
   _playerColor: {r: 0.4648342, g: 0, b: 1, a: 1}

@@ -12,6 +12,7 @@ public class RagdollWrapper : MonoBehaviour
 
     private List<Collider> _ragDollColliders = new List<Collider>();
     private List<Rigidbody> _ragDollRigidBodies = new List<Rigidbody>();
+    private Animator _ragDollAnimator;
     private Dictionary<Transform, TransformInfo> initialTransforms = new Dictionary<Transform, TransformInfo>();
 
     public event Action<bool> OnRagdollUpdate;
@@ -27,6 +28,7 @@ public class RagdollWrapper : MonoBehaviour
     {
         var colliders = _mainRagdollTransform.GetComponentsInChildren<Collider>();
         var rigidbodies = _mainRagdollTransform.GetComponentsInChildren<Rigidbody>();
+        _ragDollAnimator = _mainRagdollTransform.parent.GetComponent<Animator>();
 
         foreach (var collider in colliders)
         {
@@ -88,6 +90,8 @@ public class RagdollWrapper : MonoBehaviour
             rb.isKinematic = !isOn;
         }
 
+        _ragDollAnimator.enabled = !isOn;
+
         if (isOn)
             _collider.gameObject.SetActive(false);
 
@@ -108,7 +112,12 @@ public class RagdollWrapper : MonoBehaviour
             case BodyParts.Chest:
                 {
                     Vector3 forceDir = transform.position - attackPhysics.HitterTransform.position;
-                    _chestRagDollTransform.GetComponent<Rigidbody>().AddForce(forceDir * attackPhysics.Force.x, ForceMode.Impulse);
+
+                    if (_chestRagDollTransform.TryGetComponent(out Rigidbody rb))
+                    {
+                        rb.AddForce(forceDir * attackPhysics.Force.x, ForceMode.Impulse);
+                    }
+
                     break;
                 }
         }
@@ -138,6 +147,7 @@ public class RagdollWrapper : MonoBehaviour
 
         foreach (var rb in _ragDollRigidBodies)
         {
+            rb.velocity = Vector3.zero;
             rb.isKinematic = true;
         }
     }

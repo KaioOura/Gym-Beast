@@ -6,8 +6,6 @@ using UnityEngine.UI;
 
 public class Shop : MonoBehaviour
 {
-
-
     [SerializeField] private float _timeToStartPurchase;
     [SerializeField] private float _timeToCompletePurchase;
     [SerializeField] private Image _purchaseProgressImage;
@@ -21,12 +19,14 @@ public class Shop : MonoBehaviour
     private float _startPurchase;
 
     public event Action<int> OnPurchase;
+    public event Action OnGiveLevel;
 
 
     // Start is called before the first frame update
     void Start()
     {
         OnPurchase += PlayerManager.Instance.OnPayment;
+        OnGiveLevel += PlayerManager.Instance.LevelUp;
     }
 
     // Update is called once per frame
@@ -53,7 +53,6 @@ public class Shop : MonoBehaviour
             {
                 Debug.Log("Purchased");
                 _alreadyPurchased = true;
-
                 
                 OnPurchase?.Invoke(_price);
             }
@@ -73,29 +72,29 @@ public class Shop : MonoBehaviour
         _purchaseProgress = 0;
     }
 
-    
-
-
     bool CanGiveReward()
     {
-        switch (_purchaseReward)
-        {
-            case PurchaseReward.None:
-                {
-                    break;
-                }
-            case PurchaseReward.Level:
-                {
-                    return PlayerManager.Instance.CanLevelUp();
-                }
+        if (!IsRewardEligible(_purchaseReward))
+            return false;
 
-            default:
-                {
-
-                    break;
-                }
-        }
+        ApplyReward(_purchaseReward);
         return true;
+    }
+
+    private bool IsRewardEligible(PurchaseReward reward)
+    {
+        return reward switch
+        {
+            PurchaseReward.None => true,
+            PurchaseReward.Level => PlayerManager.Instance.CanLevelUp(),
+            _ => false // Caso para recompensas desconhecidas
+        };
+    }
+
+    private void ApplyReward(PurchaseReward reward)
+    {
+        if (reward == PurchaseReward.Level)
+            OnGiveLevel?.Invoke();
     }
 
     private void OnTriggerEnter(Collider other)

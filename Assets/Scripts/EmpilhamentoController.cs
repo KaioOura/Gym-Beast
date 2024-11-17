@@ -10,7 +10,7 @@ public class EmpilhamentoController : MonoBehaviour
     [SerializeField] private float _bodyFollowSpeed = 10;
     [SerializeField] List<Body> _bodies;
 
-     private int _maxBodies;
+    private int _maxBodies;
 
     public List<Body> Bodies => _bodies;
 
@@ -29,8 +29,13 @@ public class EmpilhamentoController : MonoBehaviour
 
     void Update()
     {
-        HandleBodies();
         UpdateVector();
+
+    }
+
+    void FixedUpdate()
+    {
+        HandleBodies();
     }
 
     public void Init(Rigidbody rb)
@@ -64,19 +69,23 @@ public class EmpilhamentoController : MonoBehaviour
     {
         Vector3 myVelocity = -_rb.velocity;
         Quaternion toRotation = Quaternion.FromToRotation(_firstVector.up, -_rb.velocity);
+        Vector3 player = -transform.forward;
 
         if (myVelocity != Vector3.zero)
         {
             _firstVector.rotation = Quaternion.Lerp(_firstVector.rotation, toRotation, _deformVelocity * Time.deltaTime);
         }
+        else
+        {
+            Quaternion toStopRotation = Quaternion.FromToRotation(_firstVector.up, Vector3.zero);
+            _firstVector.rotation = Quaternion.Lerp(_firstVector.rotation, toStopRotation, _returnVelocity * Time.deltaTime);
+        }
 
-        Quaternion toStopRotation = Quaternion.FromToRotation(_firstVector.up, Vector3.zero);
-        _firstVector.rotation = Quaternion.Lerp(_firstVector.rotation, toStopRotation, _returnVelocity * Time.deltaTime);
     }
 
     void HandleBodies()
     {
-        if (_bodies.Count <= 0)
+        if (_bodies.Count <= 0 || Mathf.Abs(_firstVector.eulerAngles.z) <= 0.5f)
             return;
 
         for (int i = 0; i < _bodies.Count; i++)
@@ -84,13 +93,12 @@ public class EmpilhamentoController : MonoBehaviour
             if (i == 0)
             {
                 Quaternion toRot = Quaternion.LookRotation(-_firstVector.up);
-
                 _bodies[0].BodyBones.position = Vector3.Lerp(_bodies[0].BodyBones.position, _firstVector.position, _bodyFollowSpeed * Time.deltaTime);
                 _bodies[0].BodyBones.rotation = Quaternion.Lerp(_bodies[0].BodyBones.rotation, toRot, _deformVelocity * Time.deltaTime);
 
                 continue;
             }
-            
+
             _bodies[i].BodyBones.position = Vector3.Lerp(_bodies[i].BodyBones.position, _bodies[i - 1].BodyPos.position, _bodyFollowSpeed * Time.deltaTime);
             _bodies[i].BodyBones.rotation = Quaternion.Lerp(_bodies[0].BodyBones.rotation, _bodies[i - 1].BodyPos.rotation, _deformVelocity * Time.deltaTime);
 
