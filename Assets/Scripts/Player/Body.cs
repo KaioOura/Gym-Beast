@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using TMPro.EditorUtilities;
 using UnityEngine;
 
 public class Body : MonoBehaviour
@@ -11,6 +10,10 @@ public class Body : MonoBehaviour
     [SerializeField] private CollisionNotifier _collisionNotifier;
     [SerializeField] private Transform _bodyBones;
     [SerializeField] private int _sellValue;
+
+
+    private bool _canBePicked;
+    private IEnumerator _pickRoutine;
 
     public Transform BodyBones => _bodyBones;
     public Transform BodyPos => bodyPos;
@@ -33,6 +36,9 @@ public class Body : MonoBehaviour
 
     public void TryToAddToPile(Collider collider)
     {
+        if (!_canBePicked)
+            return;
+
         Debug.Log("Encostou no: " + collider);
 
         if (collider.TryGetComponent(out EmpilhamentoController empilhamentoController))
@@ -48,6 +54,23 @@ public class Body : MonoBehaviour
     public void OnRagdollUpdateRecieved(bool isOn)
     {
         _collisionNotifier.gameObject.SetActive(isOn);
+
+        if (_pickRoutine != null)
+        {
+            StopCoroutine(_pickRoutine);
+        }
+
+        if (isOn)
+        {
+            _pickRoutine = EnablePickingUp();
+            StartCoroutine(_pickRoutine);
+        }
+    }
+
+    IEnumerator EnablePickingUp()
+    {
+        yield return new WaitForSeconds(1);
+        _canBePicked = true;
     }
 
 }

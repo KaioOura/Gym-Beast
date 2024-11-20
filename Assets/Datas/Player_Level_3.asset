@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _levelModule: 3
   _valueToAddToPile: 10
-  _playerColor: {r: 0.4648342, g: 0, b: 1, a: 1}
+  _playerColor: {r: 0, g: 1, b: 0.14216971, a: 1}

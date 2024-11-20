@@ -69,7 +69,6 @@ public class EmpilhamentoController : MonoBehaviour
     {
         Vector3 myVelocity = -_rb.velocity;
         Quaternion toRotation = Quaternion.FromToRotation(_firstVector.up, -_rb.velocity);
-        Vector3 player = -transform.forward;
 
         if (myVelocity != Vector3.zero)
         {
